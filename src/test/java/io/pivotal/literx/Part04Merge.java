@@ -1,9 +1,10 @@
 package io.pivotal.literx;
 
+import org.junit.Test;
+
 import io.pivotal.literx.domain.User;
 import io.pivotal.literx.repository.ReactiveRepository;
 import io.pivotal.literx.repository.ReactiveUserRepository;
-import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.TestSubscriber;
@@ -25,7 +26,7 @@ public class Part04Merge {
 
 	@Test
 	public void mergeWithInterleave() {
-		Flux<User> flux = mergeFluxWithInterleave(repository1.findAll(), repository2.findAll());
+		final Flux<User> flux = mergeFluxWithInterleave(repository1.findAll(), repository2.findAll());
 		TestSubscriber
 				.subscribe(flux)
 				.await()
@@ -34,15 +35,15 @@ public class Part04Merge {
 	}
 
 	// TODO Merge flux1 and flux2 values with interleave
-	Flux<User> mergeFluxWithInterleave(Flux<User> flux1, Flux<User> flux2) {
-		return null;
+	Flux<User> mergeFluxWithInterleave(final Flux<User> flux1, final Flux<User> flux2) {
+		return Flux.merge(flux1, flux2);
 	}
 
 //========================================================================================
 
 	@Test
 	public void mergeWithNoInterleave() {
-		Flux<User> flux = mergeFluxWithNoInterleave(repository1.findAll(), repository2.findAll());
+		final Flux<User> flux = mergeFluxWithNoInterleave(repository1.findAll(), repository2.findAll());
 		TestSubscriber
 				.subscribe(flux)
 				.await()
@@ -51,17 +52,17 @@ public class Part04Merge {
 	}
 
 	// TODO Merge flux1 and flux2 values with no interleave (flux1 values, and then flux2 values)
-	Flux<User> mergeFluxWithNoInterleave(Flux<User> flux1, Flux<User> flux2) {
-		return null;
+	Flux<User> mergeFluxWithNoInterleave(final Flux<User> flux1, final Flux<User> flux2) {
+		return Flux.concat(flux1, flux2);
 	}
 
 //========================================================================================
 
 	@Test
 	public void multipleMonoToFlux() {
-		Mono<User> skylerMono = repository1.findFirst();
-		Mono<User> marieMono = repository2.findFirst();
-		Flux<User> flux = createFluxFromMultipleMono(skylerMono, marieMono);
+		final Mono<User> skylerMono = repository1.findFirst();
+		final Mono<User> marieMono = repository2.findFirst();
+		final Flux<User> flux = createFluxFromMultipleMono(skylerMono, marieMono);
 		TestSubscriber
 				.subscribe(flux)
 				.await()
@@ -70,8 +71,8 @@ public class Part04Merge {
 	}
 
 	// TODO Create a Flux containing the values of the 2 Mono
-	Flux<User> createFluxFromMultipleMono(Mono<User> mono1, Mono<User> mono2) {
-		return null;
+	Flux<User> createFluxFromMultipleMono(final Mono<User> mono1, final Mono<User> mono2) {
+		return Flux.concat(mono1, mono2);//mono1.concatWith(mono2);
 	}
 
 }

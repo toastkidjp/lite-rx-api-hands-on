@@ -1,6 +1,7 @@
 package io.pivotal.literx;
 
 import org.junit.Test;
+
 import reactor.core.publisher.Mono;
 import reactor.test.TestSubscriber;
 
@@ -17,7 +18,7 @@ public class Part02CreateMono {
 
 	@Test
 	public void empty() {
-		Mono<String> mono = emptyMono();
+		final Mono<String> mono = emptyMono();
 		TestSubscriber
 				.subscribe(mono)
 				.assertValueCount(0)
@@ -26,14 +27,14 @@ public class Part02CreateMono {
 
 	// TODO Return an empty Mono
 	Mono<String> emptyMono() {
-		return null;
+		return Mono.empty();
 	}
 
 //========================================================================================
 
 	@Test
 	public void fromValue() {
-		Mono<String> mono = fooMono();
+		final Mono<String> mono = fooMono();
 		TestSubscriber
 				.subscribe(mono)
 				.assertValues("foo")
@@ -42,14 +43,14 @@ public class Part02CreateMono {
 
 	// TODO Return a Mono that contains a "foo" value
 	Mono<String> fooMono() {
-		return null;
+		return Mono.just("foo");
 	}
 
 //========================================================================================
 
 	@Test
 	public void error() {
-		Mono<String> mono = errorMono();
+		final Mono<String> mono = errorMono();
 		TestSubscriber
 				.subscribe(mono)
 				.assertError(IllegalStateException.class)
@@ -58,7 +59,7 @@ public class Part02CreateMono {
 
 	// TODO Create a Mono that emits an IllegalStateException
 	Mono<String> errorMono() {
-		return null;
+		return Mono.error(new IllegalStateException());
 	}
 
 }

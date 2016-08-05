@@ -1,6 +1,9 @@
 package io.pivotal.literx;
 
+import java.util.Arrays;
+
 import org.junit.Test;
+
 import reactor.core.publisher.Flux;
 import reactor.test.TestSubscriber;
 
@@ -17,7 +20,7 @@ public class Part01CreateFlux {
 
 	@Test
 	public void empty() {
-		Flux<String> flux = emptyFlux();
+		final Flux<String> flux = emptyFlux();
 		TestSubscriber
 				.subscribe(flux)
 				.assertValueCount(0)
@@ -26,14 +29,14 @@ public class Part01CreateFlux {
 
 	// TODO Return an empty Flux
 	Flux<String> emptyFlux() {
-		return null;
+		return Flux.just();
 	}
 
 //========================================================================================
 
 	@Test
 	public void fromValues() {
-		Flux<String> flux = fooBarFluxFromValues();
+		final Flux<String> flux = fooBarFluxFromValues();
 		TestSubscriber
 				.subscribe(flux)
 				.assertValues("foo", "bar")
@@ -42,14 +45,14 @@ public class Part01CreateFlux {
 
 	// TODO Return a Flux that contains 2 values "foo" and "bar" without using an array or a collection
 	Flux<String> fooBarFluxFromValues() {
-		return null;
+		return Flux.just("foo", "bar");
 	}
 
 //========================================================================================
 
 	@Test
 	public void fromList() {
-		Flux<String> flux = fooBarFluxFromList();
+		final Flux<String> flux = fooBarFluxFromList();
 		TestSubscriber
 				.subscribe(flux)
 				.assertValues("foo", "bar")
@@ -58,14 +61,14 @@ public class Part01CreateFlux {
 
 	// TODO Create a Flux from a List that contains 2 values "foo" and "bar"
 	Flux<String> fooBarFluxFromList() {
-		return null;
+		return Flux.fromIterable(Arrays.asList("foo", "bar"));
 	}
 
 //========================================================================================
 
 	@Test
 	public void error() {
-		Flux<String> flux = errorFlux();
+		final Flux<String> flux = errorFlux();
 		TestSubscriber
 				.subscribe(flux)
 				.assertError(IllegalStateException.class)
@@ -74,14 +77,14 @@ public class Part01CreateFlux {
 
 	// TODO Create a Flux that emits an IllegalStateException
 	Flux<String> errorFlux() {
-		return null;
+		return Flux.error(new IllegalStateException());
 	}
 
 //========================================================================================
 
 	@Test
 	public void neverTerminates() {
-		Flux<String> flux = neverTerminatedFlux();
+		final Flux<String> flux = neverTerminatedFlux();
 		TestSubscriber
 				.subscribe(flux)
 				.assertNotTerminated();
@@ -89,14 +92,14 @@ public class Part01CreateFlux {
 
 	// TODO Create a Flux that never terminates
 	Flux<String> neverTerminatedFlux() {
-		return null;
+		return Flux.never();
 	}
 
 //========================================================================================
 
 	@Test
 	public void countEachSecond() {
-		Flux<Long> flux = counter();
+		final Flux<Long> flux = counter();
 		TestSubscriber
 				.subscribe(flux)
 				.assertNotTerminated()
@@ -105,7 +108,7 @@ public class Part01CreateFlux {
 
 	// TODO Create a Flux that emits an increasing value each 100ms
 	Flux<Long> counter() {
-		return null;
+		return Flux.intervalMillis(100L);
 	}
 
 }

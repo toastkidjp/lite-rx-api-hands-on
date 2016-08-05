@@ -18,10 +18,12 @@ package io.pivotal.literx;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.junit.Test;
+
 import io.pivotal.literx.domain.User;
 import io.pivotal.literx.repository.ReactiveRepository;
 import io.pivotal.literx.repository.ReactiveUserRepository;
-import org.junit.Test;
+import reactor.adapter.RxJava1Adapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.TestSubscriber;
@@ -46,8 +48,8 @@ public class Part08Conversion {
 
 	@Test
 	public void observableConversion() {
-		Flux<User> flux = repository.findAll();
-		Observable<User> observable = fromFluxToObservable(flux);
+		final Flux<User> flux = repository.findAll();
+		final Observable<User> observable = fromFluxToObservable(flux);
 		TestSubscriber
 				.subscribe(fromObservableToFlux(observable))
 				.await()
@@ -56,21 +58,21 @@ public class Part08Conversion {
 	}
 
 	// TODO Convert Flux to RxJava Observable thanks to a Reactor converter
-	Observable<User> fromFluxToObservable(Flux<User> flux) {
-		return null;
+	Observable<User> fromFluxToObservable(final Flux<User> flux) {
+		return RxJava1Adapter.publisherToObservable(flux);
 	}
 
 	// TODO Convert RxJava Observable to Flux thanks to a Reactor converter
-	Flux<User> fromObservableToFlux(Observable<User> observable) {
-		return null;
+	Flux<User> fromObservableToFlux(final Observable<User> observable) {
+		return RxJava1Adapter.observableToFlux(observable);
 	}
 
 //========================================================================================
 
 	@Test
 	public void singleConversion() {
-		Mono<User> mono = repository.findFirst();
-		Single<User> single = fromMonoToSingle(mono);
+		final Mono<User> mono = repository.findFirst();
+		final Single<User> single = fromMonoToSingle(mono);
 		TestSubscriber
 				.subscribe(fromSingleToMono(single))
 				.await()
@@ -79,21 +81,21 @@ public class Part08Conversion {
 	}
 
 	// TODO Convert Mono to RxJava Single thanks to a Reactor converter
-	Single<User> fromMonoToSingle(Mono<User> mono) {
-		return null;
+	Single<User> fromMonoToSingle(final Mono<User> mono) {
+		return RxJava1Adapter.publisherToSingle(mono);
 	}
 
 	// TODO Convert RxJava Single to Mono thanks to a Reactor converter
-	Mono<User> fromSingleToMono(Single<User> single) {
-		return null;
+	Mono<User> fromSingleToMono(final Single<User> single) {
+		return RxJava1Adapter.singleToMono(single);
 	}
 
 //========================================================================================
 
 	@Test
 	public void completableFutureConversion() {
-		Mono<User> mono = repository.findFirst();
-		CompletableFuture<User> future = fromMonoToCompletableFuture(mono);
+		final Mono<User> mono = repository.findFirst();
+		final CompletableFuture<User> future = fromMonoToCompletableFuture(mono);
 		TestSubscriber
 				.subscribe(fromCompletableFutureToMono(future))
 				.await()
@@ -102,13 +104,13 @@ public class Part08Conversion {
 	}
 
 	// TODO Convert Mono to Java 8+ CompletableFuture thanks to a Reactor converter
-	CompletableFuture<User> fromMonoToCompletableFuture(Mono<User> mono) {
-		return null;
+	CompletableFuture<User> fromMonoToCompletableFuture(final Mono<User> mono) {
+		return mono.toFuture();
 	}
 
 	// TODO Convert Java 8+ CompletableFuture to Mono thanks to a Reactor converter
-	Mono<User> fromCompletableFutureToMono(CompletableFuture<User> future) {
-		return null;
+	Mono<User> fromCompletableFutureToMono(final CompletableFuture<User> future) {
+		return Mono.fromFuture(future);
 	}
 
 

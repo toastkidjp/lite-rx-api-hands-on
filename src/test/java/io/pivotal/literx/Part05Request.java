@@ -1,12 +1,12 @@
 package io.pivotal.literx;
 
+import org.junit.Test;
+
 import io.pivotal.literx.domain.User;
 import io.pivotal.literx.repository.ReactiveRepository;
 import io.pivotal.literx.repository.ReactiveUserRepository;
-import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.TestSubscriber;
-
 /**
  * Learn how to control the demand.
  *
@@ -20,24 +20,24 @@ public class Part05Request {
 
 	@Test
 	public void requestNoValue() {
-		Flux<User> flux = repository.findAll();
-		TestSubscriber<User> testSubscriber = createSubscriber(flux);
+		final Flux<User> flux = repository.findAll();
+		final TestSubscriber<User> testSubscriber = createSubscriber(flux);
 		testSubscriber
 				.await()
 				.assertNoValues();
 	}
 
 	// TODO Create a TestSubscriber that requests initially no value
-	TestSubscriber<User> createSubscriber(Flux<User> flux) {
-		return null;
+	TestSubscriber<User> createSubscriber(final Flux<User> flux) {
+		return TestSubscriber.subscribe(flux, 0);
 	}
 
 //========================================================================================
 
 	@Test
 	public void requestValueOneByOne() {
-		Flux<User> flux = repository.findAll();
-		TestSubscriber<User> testSubscriber = createSubscriber(flux);
+		final Flux<User> flux = repository.findAll();
+		final TestSubscriber<User> testSubscriber = createSubscriber(flux);
 		testSubscriber
 				.assertValueCount(0);
 		requestOne(testSubscriber);
@@ -59,16 +59,16 @@ public class Part05Request {
 	}
 
 	// TODO Request one value
-	void requestOne(TestSubscriber<User> testSubscriber) {
-
+	void requestOne(final TestSubscriber<User> testSubscriber) {
+	    testSubscriber.request(1L);
 	}
 
 //========================================================================================
 
 	@Test
 	public void experimentWithLog() {
-	Flux<User> flux = fluxWithLog();
-		TestSubscriber<User> testSubscriber = createSubscriber(flux);
+	    final Flux<User> flux = fluxWithLog();
+		final TestSubscriber<User> testSubscriber = createSubscriber(flux);
 		testSubscriber
 				.assertValueCount(0);
 		requestOne(testSubscriber);
@@ -91,7 +91,7 @@ public class Part05Request {
 
 	// TODO Return a Flux with all users stored in the repository that prints automatically logs for all Reactive Streams signals
 	Flux<User> fluxWithLog() {
-		return null;
+	    return repository.findAll().log();
 	}
 
 
@@ -99,8 +99,8 @@ public class Part05Request {
 
 	@Test
 	public void experimentWithDoOn() {
-		Flux<User> flux = fluxWithDoOnPrintln();
-		TestSubscriber<User> testSubscriber = createSubscriber(flux);
+		final Flux<User> flux = fluxWithDoOnPrintln();
+		final TestSubscriber<User> testSubscriber = createSubscriber(flux);
 		testSubscriber
 				.assertValueCount(0);
 		requestOne(testSubscriber);
@@ -123,7 +123,11 @@ public class Part05Request {
 
 	// TODO Return a Flux with all users stored in the repository that prints "Starring:" on subscribe, "firstname lastname" for all values and "The end!" on complete
 	Flux<User> fluxWithDoOnPrintln() {
-		return null;
+		return repository.findAll()
+		        .doOnSubscribe(sub -> System.out.println("Starring:"))
+		        .doOnNext(user -> System.out.println(
+		                String.format("%s %s", user.getFirstname(), user.getLastname())))
+		        .doOnComplete(() -> System.out.println("The end!"));
 	}
 
 }
